@@ -18,35 +18,35 @@ c_types <- cols(
   'y_coordinate' = col_double()
 )
 
-cid2004 <- read_csv('crime_incident_data_2004.csv', skip = 1,
+cid2004 <- read_csv('csv/crime_incident_data_2004.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2005 <- read_csv('crime_incident_data_2005.csv', skip = 1,
+cid2005 <- read_csv('csv/crime_incident_data_2005.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2006 <- read_csv('crime_incident_data_2006.csv', skip = 1,
+cid2006 <- read_csv('csv/crime_incident_data_2006.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2007 <- read_csv('crime_incident_data_2007.csv', skip = 1,
+cid2007 <- read_csv('csv/crime_incident_data_2007.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2008 <- read_csv('crime_incident_data_2008.csv', skip = 1,
+cid2008 <- read_csv('csv/crime_incident_data_2008.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2009 <- read_csv('crime_incident_data_2009.csv', skip = 1,
+cid2009 <- read_csv('csv/crime_incident_data_2009.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2010 <- read_csv('crime_incident_data_2010.csv', skip = 1,
+cid2010 <- read_csv('csv/crime_incident_data_2010.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2011 <- read_csv('crime_incident_data_2011.csv', skip = 1,
+cid2011 <- read_csv('csv/crime_incident_data_2011.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2012 <- read_csv('crime_incident_data_2012.csv', skip = 1,
+cid2012 <- read_csv('csv/crime_incident_data_2012.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2013 <- read_csv('crime_incident_data_2013.csv', skip = 1,
+cid2013 <- read_csv('csv/crime_incident_data_2013.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
 
-cid2014 <- read_csv('crime_incident_data_2014.csv', skip = 1,
+cid2014 <- read_csv('csv/crime_incident_data_2014.csv', skip = 1,
                     col_names = c_names, col_types = c_types)
