@@ -1,4 +1,6 @@
 library('readr')
+library('purrr')
+library('plyr')
 
 c_names <- c('record_id', 'report_date', 'report_time',
              'major_offense_type', 'address', 'neighborhood',
@@ -18,35 +20,24 @@ c_types <- cols(
   'y_coordinate' = col_double()
 )
 
-cid2004 <- read_csv('csv/crime_incident_data_2004.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
+filename_list <- c('csv/crime_incident_data_2004.csv', 
+                   'csv/crime_incident_data_2005.csv',
+                   'csv/crime_incident_data_2006.csv', 
+                   'csv/crime_incident_data_2007.csv',
+                   'csv/crime_incident_data_2008.csv', 
+                   'csv/crime_incident_data_2009.csv',
+                   'csv/crime_incident_data_2010.csv', 
+                   'csv/crime_incident_data_2011.csv',
+                   'csv/crime_incident_data_2012.csv', 
+                   'csv/crime_incident_data_2013.csv',
+                   'csv/crime_incident_data_2014.csv'
+)
 
-cid2005 <- read_csv('csv/crime_incident_data_2005.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
+get_data <- function(filename) {
+  read_csv(filename, skip = 1, col_names = c_names, 
+           col_types = c_types)
+}
 
-cid2006 <- read_csv('csv/crime_incident_data_2006.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
+df1 <- rbind.fill(map(filename_list, get_data))
 
-cid2007 <- read_csv('csv/crime_incident_data_2007.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
-
-cid2008 <- read_csv('csv/crime_incident_data_2008.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
-
-cid2009 <- read_csv('csv/crime_incident_data_2009.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
-
-cid2010 <- read_csv('csv/crime_incident_data_2010.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
-
-cid2011 <- read_csv('csv/crime_incident_data_2011.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
-
-cid2012 <- read_csv('csv/crime_incident_data_2012.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
-
-cid2013 <- read_csv('csv/crime_incident_data_2013.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
-
-cid2014 <- read_csv('csv/crime_incident_data_2014.csv', skip = 1,
-                    col_names = c_names, col_types = c_types)
+rm('c_names', 'c_types', 'filename_list', 'get_data')
