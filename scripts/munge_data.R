@@ -1,9 +1,10 @@
-library('dplyr')
+source('~/Projects/portland_crime_analysis/scripts/import_data.R')
+
+library('plyr')
 library('sp')
 
 # maps_df contains only those crimes with location information
-maps_df <- select(df1, report_date, major_offense_type, x_coordinate, y_coordinate)
-maps_df <- maps_df[!is.na(df1$x_coordinate),]
+maps_df <- full_df[!is.na(full_df$x_coordinate),]
 
 # convert state-plane coordinates to lat/long
 sub_maps_df <- data.frame(x = maps_df$x_coordinate, 
@@ -16,9 +17,14 @@ maps_df['long'] = latlong['y']
 maps_df$x_coordinate <- NULL
 maps_df$y_coordinate <- NULL
 
+# create no_maps, which doesn't have location information
+# then join maps_df and no_maps back together
+no_maps <- full_df[is.na(full_df$x_coordinate),]
+no_maps$x_coordinate <- NULL
+no_maps$y_coordinate <- NULL
+full_df <- rbind.fill(maps_df, no_maps)
 
 # remove extra variables, unload packages
+rm('sub_maps_df', 'latlong', 'maps_df', 'no_maps')
 
-rm('sub_maps_df', 'latlong')
-
-detach('package:dplyr', unload = TRUE)
+detach('package:plyr', unload = TRUE)

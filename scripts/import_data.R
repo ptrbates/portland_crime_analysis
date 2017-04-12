@@ -38,7 +38,7 @@ get_data <- function(filename) {
            col_types = c_types)
 }
 
-df1 <- rbind.fill(map(filename_list, get_data))
+full_df <- rbind.fill(map(filename_list, get_data))
 
 
 # remove extra variables, unload packages
