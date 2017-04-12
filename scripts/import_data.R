@@ -1,6 +1,6 @@
 library('readr')
-library('purrr')
 library('plyr')
+library('purrr')
 
 c_names <- c('record_id', 'report_date', 'report_time',
              'major_offense_type', 'address', 'neighborhood',
@@ -40,4 +40,11 @@ get_data <- function(filename) {
 
 df1 <- rbind.fill(map(filename_list, get_data))
 
+
+# remove extra variables, unload packages
+
 rm('c_names', 'c_types', 'filename_list', 'get_data')
+
+detach('package:readr', unload = TRUE)
+detach('package:purrr', unload = TRUE)
+detach('package:plyr', unload = TRUE)
