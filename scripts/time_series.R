@@ -1,2 +1,38 @@
 source('~/Projects/portland_crime_analysis/scripts/crimes_by_category.R')
 
+library('ggplot2')
+library('plyr')
+library('lubridate')
+
+# function to make the standard line graph
+time_series_plot <- function(df, chart_title, category, y_label) {
+  ggplot(data = df, aes(x = df$date, y = df[[category]])) +
+    geom_line() +
+    ylab(y_label) +
+    xlab("Date") +
+    scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    labs(title = chart_title)
+}
+
+# line graph of unemployment
+time_series_plot(unemp_df, "Unemployment Rate", "unemp_rate", 
+         "Unemployment Rate (%)")
+
+
+# plot line graphs
+time_series_plot2 <- function(df1, chart_title) {
+  aa <- plyr::count(df1, c("year(report_date)", "major_offense_type"))
+  aa$year <- aa$year.report_date.
+  aa$year.report_date. <- NULL
+  
+  ggplot(data = aa, aes(x = year, color = major_offense_type,
+                         y = freq, group = major_offense_type)) +
+    geom_line() +
+    ylab("Count") +
+    xlab("Date") +
+    scale_x_continuous(breaks = 
+                         c(2004, 2006, 2008, 2010, 2012, 2014)) +
+    labs(title = chart_title)
+}
+
+time_series_plot2(pers_df, "Statutory")

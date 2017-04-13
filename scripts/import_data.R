@@ -38,13 +38,20 @@ get_data <- function(filename) {
            col_types = c_types)
 }
 
+# construct full crime data frame
 full_df <- rbind.fill(map(filename_list, get_data))
 
+# construct population data frame
+pop_df <- read_csv('csv/portland_population.csv',
+                   col_names = c('year', 'population'),
+                   cols(year = col_date(format = '%Y'),
+                        population = col_integer()))
+
+# construct unemployment data frame
+unemp_df <- read_csv('csv/portland_unemployment.csv',
+                     col_names = TRUE,
+                     col_types = 'cc___d')
 
 # remove extra variables, unload packages
 
 rm('c_names', 'c_types', 'filename_list', 'get_data')
-
-detach('package:readr', unload = TRUE)
-detach('package:purrr', unload = TRUE)
-detach('package:plyr', unload = TRUE)
