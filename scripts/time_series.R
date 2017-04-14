@@ -32,7 +32,11 @@ time_series_plot2 <- function(df1, chart_title) {
     xlab("Date") +
     scale_x_continuous(breaks = 
                          c(2004, 2006, 2008, 2010, 2012, 2014)) +
-    labs(title = chart_title)
+    labs(title = chart_title) 
 }
 
-time_series_plot2(pers_df, "Statutory")
+time_series_plot2(short_prop, "Property Crimes:\nLess Frequent")
+time_series_plot2(short_pers, "Personal Crimes:\nLess Frequent")
+time_series_plot2(pers_df, "Personal Crimes")
+time_series_plot2(prop_df, "Property Crimes")
+time_series_plot2(stat_df, "Statutory Crimes")
