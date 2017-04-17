@@ -40,3 +40,34 @@ time_series_plot2(short_pers, "Personal Crimes:\nLess Frequent")
 time_series_plot2(pers_df, "Personal Crimes")
 time_series_plot2(prop_df, "Property Crimes")
 time_series_plot2(stat_df, "Statutory Crimes")
+
+
+# investigate the "Ferguson Effect"
+
+aa <- plyr::count(pers_df[year(pers_df$report_date) == 2014,], 
+                  c("month(report_date)", "major_offense_type"))
+bb <- plyr::count(prop_df[year(pers_df$report_date) == 2014,], 
+                  c("month(report_date)", "major_offense_type"))
+cc <- plyr::count(stat_df[year(pers_df$report_date) == 2014,], 
+                  c("month(report_date)", "major_offense_type"))
+
+clean <- function(df1) {
+  df1$month <- df1$month.report_date.
+  df1$month.report_date. <- NULL
+  df1 <- filter(df1, month >= 6)
+}
+
+aa <- clean(aa)
+bb <- clean(bb)
+cc <- clean(cc)
+
+bb1 <- bb[bb$major_offense_type != "Larceny",]
+
+ggplot(data = bb, aes(x = month, y = freq)) + 
+  geom_line(aes(group = major_offense_type, 
+                color = major_offense_type)) +
+  ylab("Count") +
+  xlab("Date") +
+  scale_y_log10() +
+  labs(title = "Crime Rates from June 2014 to December 2014")
+  
