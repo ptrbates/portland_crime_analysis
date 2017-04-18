@@ -57,11 +57,7 @@ clean <- function(df1) {
   df1 <- filter(df1, month >= 6)
 }
 
-aa <- clean(aa)
 bb <- clean(bb)
-cc <- clean(cc)
-
-bb1 <- bb[bb$major_offense_type != "Larceny",]
 
 ggplot(data = bb, aes(x = month, y = freq)) + 
   geom_line(aes(group = major_offense_type, 
@@ -71,3 +67,4 @@ ggplot(data = bb, aes(x = month, y = freq)) +
   scale_y_log10() +
   labs(title = "Crime Rates from June 2014 to December 2014")
   
+rm('aa','bb','bb1','cc','clean','time_series_plot','time_series_plot2')
