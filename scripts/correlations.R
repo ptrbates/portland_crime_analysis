@@ -59,7 +59,7 @@ corr_plot2 <- function(df1, list1) {
       xlab(var1) +
       ylab(var2) +
       ggsave(filename = file_name)
-    }
+  }
 }
 
 corr_plot2(aa, strong_corr)
