@@ -1,4 +1,6 @@
 library('lubridate')
+library('tidyverse')
+
 
 get_count <- function(df1) {
   return(data.frame("date" = ymd(paste(year(df1$report_date), "-",
@@ -8,14 +10,18 @@ get_count <- function(df1) {
   )
 }
 
-aa <- get_count(prop_df)
+aa <- full_df %>%
+  get_count() %>%
+  merge(unemp_df) %>%
+  spread(key = major_offense_type, value = freq)
 
-bb <- merge(aa, unemp_df)
+aa[is.na(aa)] <- 0
 
-cc <- bb[bb$major_offense_type == "Larceny",]
+offenses <- as.character(unique(full_df$major_offense_type))
 
-cor(cc$unemp_rate, cc$freq)
+corr_vec <- cor(aa$unemp_rate, aa[offenses])
+weak_corr <- corr_vec[abs(corr_vec) < .3]
+mod_corr <- corr_vec[abs(corr_vec) > .3]
 
-ggplot(data = bb[bb$major_offense_type == "Burglary",], 
-       aes(x = unemp_rate, y = freq)) +
-  geom_point()
+
+
