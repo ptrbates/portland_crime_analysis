@@ -1,7 +1,6 @@
 library('lubridate')
 library('tidyverse')
 
-
 get_count <- function(df1) {
   return(data.frame("date" = ymd(paste(year(df1$report_date), "-",
                                        month(df1$report_date), "-01")),
@@ -19,9 +18,31 @@ aa[is.na(aa)] <- 0
 
 offenses <- as.character(unique(full_df$major_offense_type))
 
-corr_vec <- cor(aa$unemp_rate, aa[offenses])
-weak_corr <- corr_vec[abs(corr_vec) < .3]
-mod_corr <- corr_vec[abs(corr_vec) > .3]
+corr_df <- data.frame(round(cor(aa[offenses], aa[offenses]), 3))
 
+strong_corr <- corr_df[abs(round(corr_df, 3)) >= .7 & abs(corr_df) < 1]
 
+corr_plot <- function(df1, var1, var2) {
+  r <- round(cor(df1[[var1]], df1[[var2]]), 3)
+  plot_title <- paste("Correlation between", var1, "and", var2, "\nr =", r)
+  file_name <- paste("plots/correlations/corr_", var1, "_", var2, 
+                     ".png", sep = "")
+  my_plot <- ggplot(data = df1, aes(x = df1[[var1]], y = df1[[var2]])) +
+    geom_point() +
+    labs(title = plot_title) +
+    xlab(var1) +
+    ylab(var2) +
+    ggsave(filename = file_name)
+}
 
+strong_corr <- list(list('Burglary', 'Motor Vehicle Theft'), 
+                    list('Trespass','Burglary'),
+                    list('Trespass','Motor Vehicle Theft'), 
+                    list('Assault, Simple', 'Aggravated Assualt'),
+                    list('Larceny', 'Burglary'),
+                    list('Assault, Simple', 'Trespass'),
+                    list('Trespass', 'Drugs'),
+                    list('Trespass', 'Fraud'),
+                    list('Fraud', 'Drugs'))
+
+corr_plot(aa, strong_corr[[1]][1], 'Motor Vehicle Theft')
