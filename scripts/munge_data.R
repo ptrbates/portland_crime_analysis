@@ -1,7 +1,7 @@
 source('~/Projects/portland_crime_analysis/scripts/import_data.R')
 
 library('sp')
-library('dplyr')
+library('tidyverse')
 library('lubridate')
 
 # maps_df contains only those crimes with location information
@@ -29,5 +29,26 @@ full_df <- rbind.fill(maps_df, no_maps)
 unemp_df <- transmute(unemp_df, date = myd(paste(Period, Year, "01")),
                 unemp_rate = `unemployment rate`)
 
+# Construct the frequency data frame
+
+# Find the monthly frequency of each offense
+get_count <- function(df1) {
+  return(data.frame("date" = ymd(paste(year(df1$report_date), "-",
+                                       month(df1$report_date), "-01")),
+                    "major_offense_type" = df1$major_offense_type) %>%
+           plyr::count(c("date", "major_offense_type"))
+  )
+}
+
+# Complie the frequencies into one df, with unemployment included
+freq_df <- full_df %>%
+  get_count() %>%
+  merge(unemp_df) %>%
+  spread(key = major_offense_type, value = freq)
+
+# Fill in NA with 0 (no offenses of that type for that period)
+freq_df[is.na(freq_df)] <- 0
+
+
 # remove extra variables, unload packages
-rm('sub_maps_df', 'latlong', 'maps_df', 'no_maps')
+rm('sub_maps_df', 'latlong', 'maps_df', 'no_maps', 'get_count')

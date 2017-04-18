@@ -1,27 +1,26 @@
-library('lubridate')
-library('tidyverse')
+source('~/Projects/portland_crime_analysis/scripts/munge_data.R')
 
-get_count <- function(df1) {
-  return(data.frame("date" = ymd(paste(year(df1$report_date), "-",
-                                       month(df1$report_date), "-01")),
-                    "major_offense_type" = df1$major_offense_type) %>%
-           plyr::count(c("date", "major_offense_type"))
-  )
-}
-
-aa <- full_df %>%
-  get_count() %>%
-  merge(unemp_df) %>%
-  spread(key = major_offense_type, value = freq)
-
-aa[is.na(aa)] <- 0
-
+# Get a list of the offenses listed from full_df
 offenses <- as.character(unique(full_df$major_offense_type))
 
+# Find the correlation between each offense and the unemployment rate
+unemp_corr <- function(df1) {
+  corr_list <- c()
+  corr_list <- rbind(corr_list, cor(df1$unemp_rate, df1[offenses]))  
+  return(corr_list)
+}
+
+# No strong correlations between unemployment and any offenses are found
+unemp_corr_list <- unemp_corr(aa)
+unemp_corr_list[unemp_corr_list > .7]
+
+
+
+
+# Find the correlations between each offense and all the others
 corr_df <- data.frame(round(cor(aa[offenses], aa[offenses]), 3))
 
-strong_corr <- corr_df[abs(round(corr_df, 3)) >= .7 & abs(corr_df) < 1]
-
+# Save plot of correlation between one variable and another
 corr_plot <- function(df1, var1, var2) {
   r <- round(cor(df1[[var1]], df1[[var2]]), 3)
   plot_title <- paste("Correlation between", var1, "and", var2, "\nr =", r)
@@ -35,6 +34,9 @@ corr_plot <- function(df1, var1, var2) {
     ggsave(filename = file_name)
 }
 
+# Find correlations >= .7 but not 1: those are all self-referencing
+strong_corr <- corr_df[abs(round(corr_df, 3)) >= .7 & abs(corr_df) < 1]
+
 strong_corr <- list(list('Burglary', 'Motor Vehicle Theft'), 
                     list('Trespass', 'Burglary'),
                     list('Trespass', 'Motor Vehicle Theft'), 
@@ -45,16 +47,17 @@ strong_corr <- list(list('Burglary', 'Motor Vehicle Theft'),
                     list('Fraud', 'Drugs'),
                     list('Assault, Simple', 'Aggravated Assault'))
 
+# Save a plot of each "strong" correlation to the appropriate file
 corr_plot2 <- function(df1, list1) {
   for (i in 1:length(list1)) {
     var1 <- list1[[i]][[1]]
     var2 <- list1[[i]][[2]]
-    plot_title <- paste("Correlation between", var1, "and", var2, "\nr =")
+    r <- round(cor(df1[[var1]], df1[[var2]]), 3)
+    plot_title <- paste("Correlation between", var1, "and", var2, "\nr =", r)
     file_name <- paste("plots/correlations/corr_", var1, "_", var2, 
                        ".png", sep = "")
-    r <- round(cor(df1[[var1]], df1[[var2]]), 3)
-    my_plot <- ggplot(data = df1, aes(x = df1[[var1]], y = df1[[var2]])) +
-      geom_point() +
+    ggplot(data = df1, aes(x = df1[[var1]], y = df1[[var2]])) +
+      geom_point(alpha = .65) +
       labs(title = plot_title) +
       xlab(var1) +
       ylab(var2) +
@@ -62,4 +65,12 @@ corr_plot2 <- function(df1, list1) {
   }
 }
 
+# Call the function for each of the strongly-correlated offenses
 corr_plot2(aa, strong_corr)
+
+
+
+
+# Remove unneeded 
+rm('aa','corr_plot','corr_plot2','strong_corr','corr_df','offenses',
+   'unemp_corr_list', 'get_count', 'unemp_corr')
