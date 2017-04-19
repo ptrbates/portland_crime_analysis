@@ -62,6 +62,7 @@ bb <- clean(bb)
 ggplot(data = bb, aes(x = month, y = freq)) + 
   geom_line(aes(group = major_offense_type, 
                 color = major_offense_type)) +
+  geom_vline(xintercept = 8.29) +
   ylab("Count") +
   xlab("Date") +
   scale_y_log10() +

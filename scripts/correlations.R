@@ -1,4 +1,4 @@
-source('~/Projects/portland_crime_analysis/scripts/munge_data.R')
+source('~/Projects/portland_crime_analysis/scripts/crimes_by_category.R')
 
 # Get a list of the offenses listed from full_df
 offenses <- as.character(unique(full_df$major_offense_type))
@@ -11,14 +11,13 @@ unemp_corr <- function(df1) {
 }
 
 # No strong correlations between unemployment and any offenses are found
-unemp_corr_list <- unemp_corr(aa)
-unemp_corr_list[unemp_corr_list > .7]
-
+unemp_corr_list <- unemp_corr(freq_df)
 
 
 
 # Find the correlations between each offense and all the others
-corr_df <- data.frame(round(cor(aa[offenses], aa[offenses]), 3))
+corr_df <- data.frame(round(cor(freq_df[offenses], 
+                                freq_df[offenses]), 3))
 
 # Save plot of correlation between one variable and another
 corr_plot <- function(df1, var1, var2) {
@@ -33,6 +32,8 @@ corr_plot <- function(df1, var1, var2) {
     ylab(var2) +
     ggsave(filename = file_name)
 }
+
+corr_plot(freq_df, 'unemp_rate', 'Larceny')
 
 # Find correlations >= .7 but not 1: those are all self-referencing
 strong_corr <- corr_df[abs(round(corr_df, 3)) >= .7 & abs(corr_df) < 1]
@@ -66,11 +67,11 @@ corr_plot2 <- function(df1, list1) {
 }
 
 # Call the function for each of the strongly-correlated offenses
-corr_plot2(aa, strong_corr)
+corr_plot2(freq_df, strong_corr)
 
 
 
 
 # Remove unneeded 
-rm('aa','corr_plot','corr_plot2','strong_corr','corr_df','offenses',
-   'unemp_corr_list', 'get_count', 'unemp_corr')
+rm('corr_plot','corr_plot2','strong_corr','corr_df','offenses',
+   'unemp_corr_list', 'unemp_corr')
