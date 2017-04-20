@@ -68,5 +68,4 @@ nei_df <- transmute(nei_df, neighborhood = as.character(nei_df$`NEIGHBORHOOD ASS
 
 # remove extra variables, unload packages
 
-rm('c_names', 'c_types', 'filename_list', 'get_data', 'c_names2',
-   'c_types2')
+rm('c_names', 'c_types', 'filename_list', 'get_data')
