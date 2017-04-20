@@ -1,6 +1,6 @@
-library('readr')
+library('tidyverse')
 library('plyr')
-library('purrr')
+library('readxl')
 
 c_names <- c('record_id', 'report_date', 'report_time',
              'major_offense_type', 'address', 'neighborhood',
@@ -52,6 +52,21 @@ unemp_df <- read_csv('csv/portland_unemployment.csv',
                      col_names = TRUE,
                      col_types = 'cc___d')
 
+
+# read data from excel sheet regarding neighborhood demographic data
+nei_df <- read_excel("csv/Census_2010_Data_Cleanedup.xls", 
+                     sheet = "Census_2010_Neighborhoods", skip = 5, n_max = 95)
+
+nei_df <- transmute(nei_df, neighborhood = as.character(nei_df$`NEIGHBORHOOD ASSOCIATION`),
+                    total_pop = as.integer(nei_df$P0010001), 
+                    white = as.integer(nei_df$P007000310),
+                    black_aa = as.integer(nei_df$P007000411),
+                    AIAN = as.integer(nei_df$P007000512),
+                    asian = as.integer(nei_df$P007000613),
+                    NHOPI = as.integer(nei_df$P007000714),
+                    other = as.integer(nei_df$P007000815))
+
 # remove extra variables, unload packages
 
-rm('c_names', 'c_types', 'filename_list', 'get_data')
+rm('c_names', 'c_types', 'filename_list', 'get_data', 'c_names2',
+   'c_types2')
