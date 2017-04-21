@@ -49,6 +49,20 @@ freq_df <- full_df %>%
 # Fill in NA with 0 (no offenses of that type for that period)
 freq_df[is.na(freq_df)] <- 0
 
+# Create a second frequency df, by year instead of by month
+get_count <- function(df1) {
+  return(data.frame("year" = ymd(paste(year(df1$report_date), "-01-01")),
+                    "major_offense_type" = df1$major_offense_type) %>%
+           plyr::count(c("year", "major_offense_type"))
+  )
+}
+
+freq_df_y <- full_df %>%
+  get_count() %>%  
+  join(pop_df, by = "year") %>%
+  spread(key = major_offense_type, value = freq)
+
+freq_df_y[is.na(freq_df_y)] <- 0
 
 # remove extra variables, unload packages
 rm('sub_maps_df', 'latlong', 'maps_df', 'no_maps', 'get_count')

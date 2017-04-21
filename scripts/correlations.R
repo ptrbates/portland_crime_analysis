@@ -15,6 +15,21 @@ unemp_corr_list <- unemp_corr(freq_df)
 
 
 
+# Find the correlation between each offense and the population
+pop_corr <- function(df1) {
+  corr_list <- c()
+  corr_list <- rbind(corr_list, cor(df1$population, df1[offenses]))  
+  return(corr_list)
+}
+
+# No strong correlations between unemployment and any offenses are found
+pop_corr_list <- data.frame(pop_corr(freq_df_y))
+pop_corr_list <- data.frame(t(pop_corr_list[,-1]))
+pop_corr_list <- mutate(pop_corr_list, coefficient = t.pop_corr_list....1..)
+pop_corr_list$t.pop_corr_list....1.. <- NULL
+
+corr_plot(freq_df_y, 'population', 'Assault, Simple')
+
 # Find the correlations between each offense and all the others
 corr_df <- data.frame(round(cor(freq_df[offenses], 
                                 freq_df[offenses]), 3))
