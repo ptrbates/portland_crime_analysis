@@ -1,4 +1,5 @@
 library('tidyverse')
+library('lubridate')
 
 # Create the summary dataframe for the entire time span
 # Find the monthly frequency of each offense
@@ -27,6 +28,10 @@ shap_df$method <- NULL
 shap_df$data.name <- NULL
 norm_offs <- shap_df[shap_df$statistic > .95,]
 
+ggplot(data = freq_df2, aes(x = Robbery)) +
+  geom_bar() +
+  labs(title = "Robbery Offenses per day, 2004-2014")
+
 # Summarize the mean and sd for each offense for the entire time period
 
 summary_df <- freq_df2
@@ -52,35 +57,20 @@ after_f2 <- transmute(after_f2, offense = x,
                       mean = sapply.after_f..mean.,
                       sd = sapply.after_f..sd.)
 
-# Perform the F test to compare the two variances
+# Perform the t-test on Robbery
 
-var.test(summary_df$`Assault, Simple`, after_f$`Assault, Simple`)
-var.test(summary_df$Drugs, after_f$Drugs)
-var.test(summary_df$Runaway, after_f$Runaway)
-var.test(summary_df$`Disorderly Conduct`, after_f$`Disorderly Conduct`)
-var.test(summary_df$`Motor Vehicle Theft`, after_f$`Motor Vehicle Theft`)
-var.test(summary_df$Burglary, after_f$Burglary)
+t.test(summary_df$Robbery, after_f$Robbery, 
+       alternative = "two.sided")
 
-# Perform the t-test on Disorderly Conduct and Motor Vehicle Theft
-
-t.test(summary_df$`Disorderly Conduct`, after_f$`Disorderly Conduct`, alternative = "two.sided")
-t.test(summary_df$`Motor Vehicle Theft`, after_f$`Motor Vehicle Theft`, alternative = "two.sided")
-
-ggplot(data = summary_df, aes(x = `Disorderly Conduct`)) +
-  geom_density() +
-  geom_vline(xintercept = mean(summary_df$`Disorderly Conduct`)) +
-  geom_vline(xintercept = mean(after_f$`Disorderly Conduct`)) +
-  labs(title = "Frequency distribution for Disorderly Conduct") +
-  xlab('Daily Occurrences') +
-  scale_x_continuous(limits = c(0,30))
-
-ggplot(data = summary_df, aes(x = `Motor Vehicle Theft`)) +
-  geom_density() +
-  geom_vline(xintercept = mean(summary_df$`Motor Vehicle Theft`)) +
-  geom_vline(xintercept = mean(after_f$`Motor Vehicle Theft`)) +
-  labs(title = "Frequency distribution for Motor Vehicle Theft") +
+ggplot(data = summary_df, aes(x = Robbery)) +
+  geom_bar() +
+  geom_vline(xintercept = mean(summary_df$Robbery), color = 'red') +
+  geom_vline(xintercept = mean(after_f$Robbery)) +
+  labs(title = "Frequency distribution for Robbery") +
   xlab('Daily Occurrences')
-  scale_x_continuous(limits = c(0,30))
 
+# Perform the Wilcoxon Signed-Rank test
+
+wilcox.test(summary_df$Robbery, after_f$Robbery)
 
 rm('x', 'get_count', 'y')

@@ -85,8 +85,12 @@ corr_plot2 <- function(df1, list1) {
 corr_plot2(freq_df, strong_corr)
 
 
+# Correlation between total crime and population
+freq_df_y <- mutate(freq_df_y, total = rowSums(freq_df_y[, c(3:29)]))
+
+corr_plot(freq_df_y, 'population', 'total')
 
 
 # Remove unneeded 
 rm('corr_plot','corr_plot2','strong_corr','corr_df','offenses',
-   'unemp_corr_list', 'unemp_corr')
+   'unemp_corr_list', 'unemp_corr', 'pop_corr', 'pop_corr_list')
