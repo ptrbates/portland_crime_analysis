@@ -28,9 +28,12 @@ shap_df$method <- NULL
 shap_df$data.name <- NULL
 norm_offs <- shap_df[shap_df$statistic > .95,]
 
+file_name <- "plots/histograms/Figure 17:\nFrequency Distribution for Robbery Reports, 2004 - 2014.png"
+
 ggplot(data = freq_df2, aes(x = Robbery)) +
   geom_bar() +
-  labs(title = "Robbery Offenses per day, 2004-2014")
+  labs(title = "Figure 17:\nFrequency Distribution for Robbery Reports, 2004 - 2014") +
+  ggsave(filename = file_name)
 
 # Summarize the mean and sd for each offense for the entire time period
 
@@ -62,13 +65,17 @@ after_f2 <- transmute(after_f2, offense = x,
 t.test(summary_df$Robbery, after_f$Robbery, 
        alternative = "two.sided")
 
+file_name <- "plots/histograms/Figure 18:\nFrequency Distribution for Robbery Reports, 2004 - 2014\nMeans Included.png"
+
 ggplot(data = summary_df, aes(x = Robbery)) +
   geom_bar() +
   geom_vline(xintercept = mean(summary_df$Robbery), color = 'red') +
-  geom_vline(xintercept = mean(after_f$Robbery)) +
-  labs(title = "Frequency distribution for Robbery") +
-  xlab('Daily Occurrences')
-
+  geom_vline(xintercept = mean(after_f$Robbery), color = 'blue') +
+  labs(title = "Figure 18:\nFrequency Distribution for Robbery Reports, 2004 - 2014
+       \tRed Line: Overall Mean\n\tBlue Line: Post-Ferguson Mean") +
+  xlab('Daily Occurrences') +
+  ggsave(filename = file_name)
+  
 # Perform the Wilcoxon Signed-Rank test
 
 wilcox.test(summary_df$Robbery, after_f$Robbery)

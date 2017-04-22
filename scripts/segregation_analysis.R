@@ -47,24 +47,23 @@ seg_df <- rename(seg_df, c("freq" = "robbery_count_2010"))
 # Calculate percent of white and black_aa in each neighborhood
 seg_df <- mutate(seg_df, percent_black_aa = black_aa / total_pop,
                  percent_white = white / total_pop,
-                 percent_diverse = 
+                 percent_not_white = 
                    (black_aa + AIAN + asian + NHOPI + other) / total_pop)
 
 # Calculate the correlation and plot the scatter plot for each
-seg_corr <- function(var1) {
+seg_corr <- function(var1, chart_title) {
   r = round(cor(seg_df[[var1]], seg_df$robbery_count_2010), 3)
+  new_title <- paste(chart_title, "\nr = ", r, sep = '')
   ggplot(data = seg_df, aes(x = seg_df[[var1]], y = robbery_count_2010)) +
     geom_point(alpha = .75) +
     xlim(c(0,1)) +
-    labs(title = paste("Correlation between Robbery and ", 
-                       var1, "\nr = ", r, sep = ''), x = var1, y = "Robberies") +
-    ggsave(filename = paste("plots/correlations/corr_", var1, "_robbery.png",
-                            sep = ""))
+    labs(title = new_title, x = var1, y = "Robberies") +
+    ggsave(filename = paste("plots/correlations/", chart_title, ".png", sep = ""))
 }
 
-seg_corr('percent_diverse')
-seg_corr('percent_black_aa')
-seg_corr('percent_white')
+seg_corr('percent_white', 'Figure 21:\nCorrelation Between Robbery and Percentage Identifying as White')
+seg_corr('percent_black_aa', 'Figure 22:\nCorrelation Between Robbery and Percentage Identifying as Black')
+seg_corr('percent_not_white', 'Figure 23:\nCorrelation Between Robbery and Percentage Identifying as Other than White')
 
 # Remove extraneous variables
 rm('aa', 'ex_rows', 'seg_corr')

@@ -1,22 +1,19 @@
 source('~/Projects/portland_crime_analysis/scripts/crimes_by_category.R')
 
-library('ggplot2')
-library('plyr')
+library('tidyverse')
 library('lubridate')
 
 # function to make the standard line graph
 time_series_plot <- function(df, chart_title, category, y_label) {
-  ggplot(data = df, aes(x = df$date, y = df[[category]])) +
-    geom_line() +
-    ylab(y_label) +
-    xlab("Date") +
+  ggplot(data = df, aes(x = df$date)) +
+    geom_line(aes(y = df[[category]])) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-    labs(title = chart_title)
+    labs(title = chart_title, x = "Date") +
+    ggsave(filename = paste("plots/lines/", chart_title, ".png", sep = ""))
 }
 
 # line graph of unemployment
-time_series_plot(unemp_df, "Unemployment Rate", "unemp_rate", 
-         "Unemployment Rate (%)")
+time_series_plot(unemp_df, "Figure 14:\nPortland's Unemployment Rate, 2004 - 2014", "unemp_rate")
 
 
 # plot line graphs
@@ -32,14 +29,15 @@ time_series_plot2 <- function(df1, chart_title) {
     xlab("Date") +
     scale_x_continuous(breaks = 
                          c(2004, 2006, 2008, 2010, 2012, 2014)) +
-    labs(title = chart_title) 
+    labs(title = chart_title) +
+    ggsave(filename = paste("plots/lines/", chart_title, ".png", sep = ""))
 }
 
-time_series_plot2(short_prop, "Property Crimes:\nLess Frequent")
-time_series_plot2(short_pers, "Personal Crimes:\nLess Frequent")
-time_series_plot2(pers_df, "Personal Crimes")
-time_series_plot2(prop_df, "Property Crimes")
-time_series_plot2(stat_df, "Statutory Crimes")
+time_series_plot2(pers_df, "Figure 3:\nTrends in Personal Crimes")
+time_series_plot2(short_pers, "Figure 5:\nTrends in Personal Crimes:\nLess Frequent Offenses")
+time_series_plot2(prop_df, "Figure 8:\nTrends in Property Crimes")
+time_series_plot2(short_prop, "Figure 9:\nTrends in Property Crimes:\nLess Frequent Offenses")
+time_series_plot2(stat_df, "Figure 12:\nTrends in Statutory Crimes")
 
 
 # investigate the "Ferguson Effect"
@@ -66,6 +64,8 @@ ggplot(data = bb, aes(x = month, y = freq)) +
   ylab("Count") +
   xlab("Date") +
   scale_y_log10() +
-  labs(title = "Crime Rates from June 2014 to December 2014")
+  labs(title = "Figure 16:\nCrime Rates from June 2014 to December 2014") +
+  ggsave(filename = "plots/lines/Figure 16:\nCrime Rates from June 2014 to December 2014.png")
   
+
 rm('aa','bb','bb1','cc','clean','time_series_plot','time_series_plot2')

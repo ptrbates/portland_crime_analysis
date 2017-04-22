@@ -28,27 +28,28 @@ pop_corr_list <- data.frame(t(pop_corr_list[,-1]))
 pop_corr_list <- mutate(pop_corr_list, coefficient = t.pop_corr_list....1..)
 pop_corr_list$t.pop_corr_list....1.. <- NULL
 
-corr_plot(freq_df_y, 'population', 'Assault, Simple')
-
 # Find the correlations between each offense and all the others
 corr_df <- data.frame(round(cor(freq_df[offenses], 
                                 freq_df[offenses]), 3))
 
 # Save plot of correlation between one variable and another
-corr_plot <- function(df1, var1, var2) {
+corr_plot <- function(df1, var1, var2, chart_title) {
   r <- round(cor(df1[[var1]], df1[[var2]]), 3)
-  plot_title <- paste("Correlation between", var1, "and", var2, "\nr =", r)
-  file_name <- paste("plots/correlations/corr_", var1, "_", var2, 
-                     ".png", sep = "")
   my_plot <- ggplot(data = df1, aes(x = df1[[var1]], y = df1[[var2]])) +
     geom_point() +
-    labs(title = plot_title) +
+    labs(title = chart_title) +
     xlab(var1) +
     ylab(var2) +
-    ggsave(filename = file_name)
+    ggsave(filename = paste("plots/correlations/", chart_title, ".png", sep = ""))
 }
 
-corr_plot(freq_df, 'unemp_rate', 'Larceny')
+
+corr_plot(freq_df_y, 'Liquor Laws', 'Drugs', "Figure 11:\nCorrelation Between Liquor Law and Drug Violations\nr = -.707")
+
+
+corr_plot(freq_df_y, 'population', 'Assault, Simple')
+
+corr_plot(freq_df, 'unemp_rate', 'Larceny', 'Figure 15:\nCorrelation Between Unemployment and Larceny Reports\nr = -.382')
 
 # Find correlations >= .7 but not 1: those are all self-referencing
 strong_corr <- corr_df[abs(round(corr_df, 3)) >= .7 & abs(corr_df) < 1]
@@ -88,7 +89,7 @@ corr_plot2(freq_df, strong_corr)
 # Correlation between total crime and population
 freq_df_y <- mutate(freq_df_y, total = rowSums(freq_df_y[, c(3:29)]))
 
-corr_plot(freq_df_y, 'population', 'total')
+corr_plot(freq_df_y, 'population', 'total', 'Figure 13:\nCorrelation Between Population and Total Crime Reports\nr = -.799')
 
 
 # Remove unneeded 
