@@ -1,11 +1,15 @@
+library('tidyverse')
 library('lubridate')
 
 # Construct a data frame of robbery offenses in 2010 by neighborhood
 aa <- full_df %>%
   select(report_date, major_offense_type, neighborhood) %>%
   filter(major_offense_type == "Robbery" & year(report_date) == 2010) %>%
-  count(c("neighborhood", "major_offense_type")) %>%
+  plyr::count(c("neighborhood", "major_offense_type")) %>%
   mutate(neighborhood = as.character(neighborhood))
+
+
+
 
 # Modify certain PPB neighborhood names to math with census names
 
@@ -33,7 +37,7 @@ aa[42,1] <- nei_df[91,1]
 
 
 # Join the robbery offense data frame with the neighborhood demographic df
-seg_df <- join(nei_df, aa, by = "neighborhood", type = "full")
+seg_df <- plyr::join(nei_df, aa, by = "neighborhood", type = "full")
 
 # Delete extra rows
 ex_rows <- c(96, 97, 98, 99)
@@ -42,7 +46,7 @@ seg_df <- seg_df[-ex_rows,]
 # Fill in values for neighborhoods with no robberies, adjust columns
 seg_df$major_offense_type <- NULL
 seg_df$freq[is.na(seg_df$freq)] <- 0  
-seg_df <- rename(seg_df, c("freq" = "robbery_count_2010"))
+seg_df <- plyr::rename(seg_df, c("freq" = "robbery_count_2010"))
 
 # Calculate percent of white and black_aa in each neighborhood
 seg_df <- mutate(seg_df, percent_black_aa = black_aa / total_pop,
@@ -64,6 +68,21 @@ seg_corr <- function(var1, chart_title) {
 seg_corr('percent_white', 'Figure 21:\nCorrelation Between Robbery and Percentage Identifying as White')
 seg_corr('percent_black_aa', 'Figure 22:\nCorrelation Between Robbery and Percentage Identifying as Black')
 seg_corr('percent_not_white', 'Figure 23:\nCorrelation Between Robbery and Percentage Identifying as Other than White')
+
+
+# Combine the above plots into one
+
+ggplot(data = seg_df) +
+  geom_point(aes(x = percent_white, y = robbery_count_2010, color = "White"), alpha = 0.5) +
+  geom_point(aes(x = percent_black_aa, y = robbery_count_2010, color = "Black or\nAfrican American"), alpha = 0.5) +
+  geom_point(aes(x = percent_not_white, y = robbery_count_2010, color = "Not White"), alpha = 0.5) +
+  scale_color_manual("", breaks = c("White", "Black or\nAfrican American", "Not White"),
+                     values = c("dark red", "dark blue", "dark green")) +
+  xlim(c(0,1)) +
+  labs(title = "Figure 21:\nRobbery Incidents by Neighborhood 2010", x = "Percent", y = "Robberies") +
+  ggsave(filename = "plots/correlations/Figure 21:\nRobbery Incidents by Neighborhood 2010.png")
+
+
 
 # Remove extraneous variables
 rm('aa', 'ex_rows', 'seg_corr')
