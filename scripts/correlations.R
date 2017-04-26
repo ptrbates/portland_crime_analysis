@@ -33,23 +33,22 @@ corr_df <- data.frame(round(cor(freq_df[offenses],
                                 freq_df[offenses]), 3))
 
 # Save plot of correlation between one variable and another
-corr_plot <- function(df1, var1, var2, chart_title) {
+corr_plot <- function(df1, var1, var2, chart_title, xlabel, ylabel) {
   r <- round(cor(df1[[var1]], df1[[var2]]), 3)
   my_plot <- ggplot(data = df1, aes(x = df1[[var1]], y = df1[[var2]])) +
     geom_point() +
-    labs(title = chart_title) +
-    xlab(var1) +
-    ylab(var2) +
+    labs(title = chart_title, x = xlabel, y = ylabel) +
     ggsave(filename = paste("plots/correlations/", chart_title, ".png", sep = ""))
 }
 
 
-corr_plot(freq_df_y, 'Liquor Laws', 'Drugs', "Figure 11:\nCorrelation Between Liquor Law and Drug Violations\nr = -.707")
+corr_plot(freq_df_y, 'Liquor Laws', 'Drugs', 
+          "Figure 11:\nCorrelation Between Liquor Law and Drug Violations\nr = -.707",
+          xlabel = "Liquor Law Violations", ylabel = "Drug-Related Violations")
 
-
-corr_plot(freq_df_y, 'population', 'Assault, Simple')
-
-corr_plot(freq_df, 'unemp_rate', 'Larceny', 'Figure 15:\nCorrelation Between Unemployment and Larceny Reports\nr = -.382')
+corr_plot(freq_df, 'unemp_rate', 'Larceny', 
+          'Figure 15:\nCorrelation Between Unemployment and Larceny Reports\nr = -.382',
+          xlabel = "Unemployment Rate (%)", ylabel = "Larceny Reports per Month")
 
 # Find correlations >= .7 but not 1: those are all self-referencing
 strong_corr <- corr_df[abs(round(corr_df, 3)) >= .7 & abs(corr_df) < 1]
@@ -89,7 +88,9 @@ corr_plot2(freq_df, strong_corr)
 # Correlation between total crime and population
 freq_df_y <- mutate(freq_df_y, total = rowSums(freq_df_y[, c(3:29)]))
 
-corr_plot(freq_df_y, 'population', 'total', 'Figure 13:\nCorrelation Between Population and Total Crime Reports\nr = -.799')
+corr_plot(freq_df_y, 'population', 'total', 
+          'Figure 13:\nCorrelation Between Population and Total Crime Reports\nr = -.799',
+          xlabel = "Population", ylabel = "Total Crime Reports per Year")
 
 
 # Remove unneeded 

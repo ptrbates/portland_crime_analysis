@@ -32,7 +32,8 @@ file_name <- "plots/histograms/Figure 17:\nFrequency Distribution for Robbery Re
 
 ggplot(data = freq_df2, aes(x = Robbery)) +
   geom_bar() +
-  labs(title = "Figure 17:\nFrequency Distribution for Robbery Reports, 2004 - 2014") +
+  labs(title = "Figure 17:\nFrequency Distribution for Robbery Reports, 2004 - 2014", 
+       x = "Daily Robbery Occurrences") +
   ggsave(filename = file_name)
 
 # Summarize the mean and sd for each offense for the entire time period
@@ -73,7 +74,7 @@ ggplot(data = summary_df, aes(x = Robbery)) +
   geom_vline(xintercept = mean(after_f$Robbery), color = 'blue') +
   labs(title = "Figure 18:\nFrequency Distribution for Robbery Reports, 2004 - 2014
        \tRed Line: Overall Mean\n\tBlue Line: Post-Ferguson Mean") +
-  xlab('Daily Occurrences') +
+  xlab('Daily Robbery Occurrences') +
   ggsave(filename = file_name)
   
 # Perform the Wilcoxon Signed-Rank test

@@ -12,8 +12,7 @@ plot_hist <- function(df1, list1, chart_title) {
       geom_histogram() +
       scale_x_continuous() +
       geom_vline(xintercept = mean(df1[[var1]])) +
-      labs(title = chart_title) +
-      xlab(var1) +
+      labs(title = chart_title, x = "Homicides per Month") +
       ggsave(filename = file_name)
   }
 }
