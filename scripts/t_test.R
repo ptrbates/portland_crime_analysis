@@ -1,5 +1,6 @@
 library('tidyverse')
 library('lubridate')
+library('scales')
 
 # Create the summary dataframe for the entire time span
 # Find the monthly frequency of each offense
@@ -66,8 +67,6 @@ after_f2 <- transmute(after_f2, offense = x,
 t.test(summary_df$Robbery, after_f$Robbery, 
        alternative = "two.sided")
 
-file_name <- "plots/histograms/Figure 18:\nFrequency Distribution for Robbery Reports, 2004 - 2014\nMeans Included.png"
-
 ggplot(data = summary_df, aes(x = Robbery)) +
   geom_bar() +
   geom_vline(xintercept = mean(summary_df$Robbery), color = 'red') +
@@ -80,5 +79,69 @@ ggplot(data = summary_df, aes(x = Robbery)) +
 # Perform the Wilcoxon Signed-Rank test
 
 wilcox.test(summary_df$Robbery, after_f$Robbery)
+
+
+
+
+
+
+# Alternate method: only consider the four months before Ferguson and the four months after
+# Summarize the mean and sd for each offense for the entire time period
+
+summary_df <- freq_df2[freq_df2$date <= ymd("2014-08-09") & 
+                         freq_df2$date >= ymd("2014-03-18"),]
+summary_df$date <- NULL
+summary_df$unemp_rate <- NULL
+summary_df$d <- "Before Ferguson"
+
+# Create df to show means and sds for each offense
+summary_df2 <- data.frame(sapply(summary_df, mean), 
+                          sapply(summary_df, sd))
+x <- rownames(summary_df2)
+summary_df2 <- transmute(summary_df2, offense = x,
+                         mean = sapply.summary_df..mean.,
+                         sd = sapply.summary_df..sd.)
+
+
+# Create the summary date frame for the events after 8/9/2014
+
+after_f <- freq_df2[freq_df2$date >= ymd("2014-08-09"),]
+
+after_f$date <- NULL
+after_f$d <- "After Ferguson"
+
+# Create df to show means and sds for each offense
+after_f2 <- data.frame(sapply(after_f, mean),
+                       sapply(after_f, sd))
+x <- rownames(after_f2)
+after_f2 <- transmute(after_f2, offense = x,
+                      mean = sapply.after_f..mean.,
+                      sd = sapply.after_f..sd.)
+
+# Rbind the summary and after_f dfs
+complete <- rbind(summary_df, after_f)
+
+# Perform the t-test on Robbery
+
+t.test(summary_df$Robbery, after_f$Robbery, 
+       alternative = "two.sided")
+
+file_name <- "plots/histograms/Figure 18:\nFrequency Distribution for Robbery Reports, 2004 - 2014\nMeans Included.png"
+
+
+ggplot(data = complete, aes(x = Robbery, fill = d)) +
+  geom_bar(position = "dodge") +
+  geom_vline(xintercept = mean(summary_df$Robbery)) +
+  geom_vline(xintercept = mean(after_f$Robbery)) +
+  labs(title = "Figure 18:\nFrequency Distribution for Robbery Reports",
+       x = "Robberies per Day")+
+  scale_x_continuous(breaks = pretty_breaks(10)) +
+  theme(legend.title = element_blank()) +
+  ggsave(filename = file_name)
+
+# Perform the Wilcoxon Signed-Rank test
+
+wilcox.test(summary_df$Robbery, after_f$Robbery)
+
 
 rm('x', 'get_count', 'y')

@@ -15,7 +15,14 @@ map_crime <- function(df, map, chart_title, s = 1, a = 1) {
   ggmap(map) +
     geom_point(data = df, aes(x = lat, y = long, color = factor(year(report_date))),
                size = s, alpha = a) +
+<<<<<<< HEAD
+    labs(title = chart_title) + 
+    theme(legend.title = element_blank()) +
+    theme(axis.title = element_blank()) +
+    theme(axis.text = element_blank()) +
+=======
     labs(title = chart_title, x = NULL, y = NULL) + 
+>>>>>>> cb4af94c1251dd64a342df6c4f92d30c2bcf3440
     scale_fill_manual(values = rhg_cols, name = "Year") +
     theme(legend.title=element_blank()) +
     ggsave(filename = paste("plots/maps/", chart_title, ".png", sep = ""))

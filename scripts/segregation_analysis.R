@@ -73,17 +73,31 @@ seg_corr('percent_not_white', 'Figure 23:\nCorrelation Between Robbery and Perce
 # Combine the above plots into one
 
 ggplot(data = seg_df) +
+<<<<<<< HEAD
+  geom_point(aes(x = 100*percent_white, y = robbery_count_2010, color = "White"),
+             alpha = 0.5) +
+=======
   geom_point(aes(x = 100*percent_white, y = robbery_count_2010, 
                  color = "White"), alpha = 0.5) +
+>>>>>>> cb4af94c1251dd64a342df6c4f92d30c2bcf3440
   geom_point(aes(x = 100*percent_black_aa, y = robbery_count_2010, 
                  color = "Black or\nAfrican American"), alpha = 0.5) +
   geom_point(aes(x = 100*percent_not_white, y = robbery_count_2010, 
                  color = "Not White"), alpha = 0.5) +
+<<<<<<< HEAD
+  scale_color_manual("", breaks = c("White", "Black or\nAfrican American", 
+                                    "Not White"),
+                     values = c("dark red", "dark blue", "dark green")) +
+  xlim(c(0,100)) +
+  labs(title = "Figure 21:\nRobbery Incidents by Neighborhood 2010",
+       x = "Percent", y = "Robberies in 2010") +
+=======
   scale_color_manual("", breaks = c("White", "Black or\nAfrican American", "Not White"),
                      values = c("dark red", "dark blue", "dark green")) +
   xlim(c(0,100)) +
   labs(title = "Figure 21:\nRobbery Incidents by Neighborhood 2010", 
        x = "Neighborhood Racial Composition by Percentage", y = "Robberies in 2010") +
+>>>>>>> cb4af94c1251dd64a342df6c4f92d30c2bcf3440
   ggsave(filename = "plots/correlations/Figure 21:\nRobbery Incidents by Neighborhood 2010.png")
 
 

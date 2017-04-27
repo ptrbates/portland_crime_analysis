@@ -1,5 +1,8 @@
 source('~/Projects/portland_crime_analysis/scripts/crimes_by_category.R')
 
+library('tidyverse')
+library('lubridate')
+
 # Get a list of the offenses listed from full_df
 offenses <- as.character(unique(full_df$major_offense_type))
 
@@ -86,12 +89,12 @@ corr_plot2(freq_df, strong_corr)
 
 
 # Correlation between total crime and population
-freq_df_y <- mutate(freq_df_y, total = rowSums(freq_df_y[, c(3:29)]))
+freq_df_y <- mutate(freq_df_y, total = rowSums(freq_df_y[, c(3:29)]), 
+                    date = as.numeric(year(year)))
 
 corr_plot(freq_df_y, 'population', 'total', 
           'Figure 13:\nCorrelation Between Population and Total Crime Reports\nr = -.799',
           xlabel = "Population", ylabel = "Total Crime Reports per Year")
-
 
 # Remove unneeded 
 rm('corr_plot','corr_plot2','strong_corr','corr_df','offenses',
