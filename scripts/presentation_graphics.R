@@ -3,6 +3,8 @@ library('lubridate')
 
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
+
+
 # Time series for total crime reports
 ggplot(data = freq_df_y, aes(x = date, y = total)) +
   geom_line() +
@@ -11,6 +13,21 @@ ggplot(data = freq_df_y, aes(x = date, y = total)) +
   labs(x = "Year", y = NULL) +
   ggsave(filename = "plots/presentation_plots/reports_per_year.png")
 
+cor(freq_df_y$date, freq_df_y$total)
+
+
+
+# Correlation between reports and population growth
+ggplot(data = freq_df_y, aes(x = population, y = total)) +
+  geom_point() +
+  ylim(c(0,85000))+
+  labs(x = "Population", y = NULL) +
+  ggsave(filename = "plots/presentation_plots/population_vs_total.png")
+
+cor(freq_df_y$population, freq_df_y$total)
+
+
+  
 # Time series for homicide reports
 ggplot(data = freq_df_y, aes(x = date, y = Homicide)) +
   geom_line() +

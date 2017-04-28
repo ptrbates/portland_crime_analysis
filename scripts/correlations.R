@@ -49,9 +49,15 @@ corr_plot(freq_df_y, 'Liquor Laws', 'Drugs',
           "Figure 11:\nCorrelation Between Liquor Law and Drug Violations\nr = -.707",
           xlabel = "Liquor Law Violations", ylabel = "Drug-Related Violations")
 
+corr_plot(freq_df_y, 'population', 'total', 
+          'Figure 13:\nCorrelation Between Population and Total Crime Reports\nr = -.799',
+          xlabel = "Population", ylabel = "Total Crime Reports per Year")
+
 corr_plot(freq_df, 'unemp_rate', 'Larceny', 
           'Figure 15:\nCorrelation Between Unemployment and Larceny Reports\nr = -.382',
           xlabel = "Unemployment Rate (%)", ylabel = "Larceny Reports per Month")
+
+
 
 # Find correlations >= .7 but not 1: those are all self-referencing
 strong_corr <- corr_df[abs(round(corr_df, 3)) >= .7 & abs(corr_df) < 1]
@@ -86,10 +92,6 @@ corr_plot2 <- function(df1, list1) {
 
 # Call the function for each of the strongly-correlated offenses
 corr_plot2(freq_df, strong_corr)
-
-corr_plot(freq_df_y, 'population', 'total', 
-          'Figure 13:\nCorrelation Between Population and Total Crime Reports\nr = -.799',
-          xlabel = "Population", ylabel = "Total Crime Reports per Year")
 
 # Remove unneeded 
 rm('corr_plot','corr_plot2','strong_corr','corr_df','offenses',

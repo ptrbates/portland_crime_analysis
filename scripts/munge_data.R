@@ -64,7 +64,11 @@ freq_df_y <- full_df %>%
 
 freq_df_y[is.na(freq_df_y)] <- 0
 
+<<<<<<< HEAD
 # Modity freq_df_y to include totals and dates columns
+=======
+# Modity freq_df_y to include totals column
+>>>>>>> 50b5372385e5b1f917248a65b4028a51bb31ee45
 freq_df_y <- mutate(freq_df_y, total = rowSums(freq_df_y[, c(3:29)]), 
                     date = as.numeric(year(year)))
 
