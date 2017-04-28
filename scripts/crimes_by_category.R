@@ -1,4 +1,4 @@
-source('~/Projects/portland_crime_analysis/scripts/munge_data.R')
+# source('~/Projects/portland_crime_analysis/scripts/munge_data.R')
 
 # list of property crimes
 property = c("Larceny", "Trespass", "Fraud", "Burglary", "Vandalism",
