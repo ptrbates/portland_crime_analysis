@@ -137,27 +137,44 @@ cor(freq_df$unemp_rate, freq_df$`Liquor Laws`)
 # The Ferguson Effect plots
 
 # Robbery distribution
-ggplot(data = summary_df, aes(x = Robbery)) +
+robs <- full_df %>%
+  select(report_date, major_offense_type) %>%
+  filter(major_offense_type == "Robbery") %>%
+  count(vars = 'report_date')
+
+ggplot(data = robs, aes(x = freq)) +
   geom_bar() +
   labs(x = "Robberies per day", y = '') +
+  scale_x_continuous(breaks = pretty_breaks()) +
   theme(legend.title = element_blank()) +
   ggsave(filename = 'plots/presentation_plots/robbery_frequency.png')
                
-mean(summary_df$Robbery) 
-sd(summary_df$Robbery)
+mean(robs$freq) 
+sd(robs$freq)
 
-# Ferguson plot                 
-ggplot(data = complete, aes(x = Robbery, fill = d)) +
+# Ferguson plot   
+ferg_robs1 <- robs[robs$report_date > as.Date("2014-03-18") & 
+                     robs$report_date <= as.Date("2014-08-09"),]
+ferg_robs1$ba <- "Before Ferguson"
+
+ferg_robs2 <- robs[robs$report_date > as.Date("2014-08-09"),]
+ferg_robs2$ba <- "After Ferguson"
+
+ferg_robs <- rbind(ferg_robs1, ferg_robs2)
+
+ggplot(data = ferg_robs, aes(x = freq, fill = ba)) +
   geom_bar(position = "dodge") +
-  geom_vline(xintercept = 2.46) +
-  geom_vline(xintercept = 2.29) +
+  geom_vline(xintercept = 2.67) +
+  geom_vline(xintercept = 2.60) +
   labs(x = "Robberies per day", y = '') +
-  scale_x_continuous(breaks = pretty_breaks(9)) +
+  scale_x_continuous(breaks = pretty_breaks()) +
   theme(legend.title = element_blank()) +
   theme(legend.position = c(.81,.82)) +
   ggsave(filename = 'plots/presentation_plots/ferguson.png')
 
-t.test(summary_df$Robbery, after_f$Robbery)
+t.test(ferg_robs1$freq, ferg_robs2$freq)
+sd(ferg_robs1$freq)
+sd(ferg_robs2$freq)
 
 
 
