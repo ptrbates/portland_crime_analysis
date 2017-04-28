@@ -1,4 +1,4 @@
-source('~/Projects/portland_crime_analysis/scripts/import_data.R')
+# source('~/Projects/portland_crime_analysis/scripts/import_data.R')
 
 library('sp')
 library('tidyverse')
@@ -63,6 +63,11 @@ freq_df_y <- full_df %>%
   spread(key = major_offense_type, value = freq)
 
 freq_df_y[is.na(freq_df_y)] <- 0
+
+# Modity freq_df_y to include totals column
+freq_df_y <- mutate(freq_df_y, total = rowSums(freq_df_y[, c(3:29)]), 
+                    date = as.numeric(year(year)))
+
 
 # remove extra variables, unload packages
 rm('sub_maps_df', 'latlong', 'maps_df', 'no_maps', 'get_count')
