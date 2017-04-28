@@ -38,6 +38,9 @@ ggplot(data = freq_df_y, aes(x = date, y = Homicide)) +
 
 mean(freq_df_y$Homicide)
 sd(freq_df_y$Homicide)
+cor(freq_df_y$date, freq_df_y$Homicide)
+
+
 
 # Time series for burglary reports
 ggplot(data = freq_df_y, aes(x = date, y = Burglary)) +
@@ -49,6 +52,8 @@ ggplot(data = freq_df_y, aes(x = date, y = Burglary)) +
 
 mean(freq_df_y$Burglary)
 sd(freq_df_y$Burglary)
+cor(freq_df_y$date, freq_df_y$Burglary)
+
 
 # Time series for DUII reports
 ggplot(data = freq_df_y, aes(x = date, y = DUII)) +
@@ -60,36 +65,37 @@ ggplot(data = freq_df_y, aes(x = date, y = DUII)) +
 
 mean(freq_df_y$DUII)
 sd(freq_df_y$DUII)
+cor(freq_df_y$date, freq_df_y$DUII)
+
+
 
 # Time series for Liquor Law and Drug reports
-ggplot(data = freq_df_y) +
-  geom_line(aes(x = date, y = Drugs), color = 'dark blue') +
-  geom_point(aes(x = date, y = Drugs)) +
-  geom_line(aes(x = date, y = `Liquor Laws`), color = 'dark red') +
-  geom_point(aes(x = date, y = `Liquor Laws`)) +
-  ylim(c(0,5000))+
+liq_drugs <- freq_df_y %>%
+  select(date, `Liquor Laws`, Drugs) %>%
+  gather(key = offense, value = freq, -date)
+
+ggplot(data = liq_drugs, aes(x = date, y = freq, color = offense)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(0,5000)) +
   labs(x = "Year", y = NULL) +
+  theme(legend.position = c(0.86, 0.25)) +
+  theme(legend.background = element_blank()) +
   ggsave(filename = "plots/presentation_plots/liquor_drugs_per_year.png")
 
 # Correlation between Liquor Law and Drug reports
 ggplot(data = freq_df_y, aes(x = `Liquor Laws`, y = Drugs)) +
   geom_point() +
+  geom_abline(slope = -0.941, intercept = 5628.873) +
   xlim(c(1500,4000)) +
   ylim(c(1500,5000)) +
   labs(x = 'Drug Offenses', y = 'Liquor Law Offenses') +
   ggsave(filename = "plots/presentation_plots/liquor_drugs_correlation.png")
 
+lm(freq_df_y$Drugs ~ freq_df_y$`Liquor Laws`)
 cor(freq_df_y$Drugs, freq_df_y$`Liquor Laws`)
 
-# Correlation between population and total reports
-ggplot(data = freq_df_y, aes(x = population, y = total)) +
-  geom_point() +
-  xlim(c(525000,625000)) +
-  ylim(c(0,90000)) +
-  labs(x = 'Population', y = 'Crime Reports') +
-  ggsave(filename = "plots/presentation_plots/population_total_correlation.png")
 
-cor(freq_df_y$population, freq_df_y$total)
 
 # Correlation between unemployment and larceny reports
 ggplot(data = freq_df, aes(x = unemp_rate, y = Larceny)) +
@@ -101,17 +107,59 @@ ggplot(data = freq_df, aes(x = unemp_rate, y = Larceny)) +
 
 cor(freq_df$unemp_rate, freq_df$Larceny)
 
-# The Ferguson Effect plot
+# Look for other correlations
+offenses <- as.character(unique(full_df$major_offense_type))
+cor_list <- cor(freq_df$unemp_rate, freq_df[offenses])
+cor_list[cor_list > 0]
+
+# Correlation between unemployment and drugs
+ggplot(data = freq_df, aes(x = unemp_rate, y = Drugs)) +
+  geom_point() +
+  xlim(c(4,11.5)) +
+  ylim(c(0,700)) +
+  labs(x = 'Unemployment Rate (%)', y = 'Drug Offenses') +
+  ggsave(filename = "plots/presentation_plots/unemp_drugs_correlation.png")
+
+cor(freq_df$unemp_rate, freq_df$Drugs)
+
+# Correlation between unemployment and liquor laws
+ggplot(data = freq_df, aes(x = unemp_rate, y = `Liquor Laws`)) +
+  geom_point() +
+  xlim(c(4,11.5)) +
+  ylim(c(0,600)) + 
+  labs(x = 'Unemployment Rate (%)', y = 'Liquor Law Offenses') +
+  ggsave(filename = "plots/presentation_plots/unemp_liquor_correlation.png")
+
+cor(freq_df$unemp_rate, freq_df$`Liquor Laws`)
+
+
+
+# The Ferguson Effect plots
+
+# Robbery distribution
+ggplot(data = summary_df, aes(x = Robbery)) +
+  geom_bar() +
+  labs(x = "Robberies per day", y = '') +
+  theme(legend.title = element_blank()) +
+  ggsave(filename = 'plots/presentation_plots/robbery_frequency.png')
+               
+mean(summary_df$Robbery) 
+sd(summary_df$Robbery)
+
+# Ferguson plot                 
 ggplot(data = complete, aes(x = Robbery, fill = d)) +
   geom_bar(position = "dodge") +
-  geom_vline(xintercept = mean(summary_df$Robbery)) +
-  geom_vline(xintercept = mean(after_f$Robbery)) +
-  labs(x = "Robberies per day", y = "Frequency") +
+  geom_vline(xintercept = 2.46) +
+  geom_vline(xintercept = 2.29) +
+  labs(x = "Robberies per day", y = '') +
   scale_x_continuous(breaks = pretty_breaks(9)) +
   theme(legend.title = element_blank()) +
+  theme(legend.position = c(.81,.82)) +
   ggsave(filename = 'plots/presentation_plots/ferguson.png')
 
 t.test(summary_df$Robbery, after_f$Robbery)
+
+
 
 # Effects of neighborhood racial demographics
 
